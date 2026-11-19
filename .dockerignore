@@ -1,0 +1,16 @@
+node_modules
+npm-debug.log
+Dockerfile
+.dockerignore
+.git
+.gitignore
+.github
+tests
+coverage
+*.pem
+*.key
+*.env*
+!*.env.example
+README.md
+db.sql
+evidencias

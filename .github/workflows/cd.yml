@@ -1,0 +1,114 @@
+name: CD - Despliegue Continuo con Docker en EC2
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  # Trabajo 1: Ejecución obligatoria de pruebas antes de construir
+  test:
+    name: 1. Pruebas Automatizadas
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descarga del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configuracion del entorno Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Instalacion de dependencias
+        run: npm ci
+
+      - name: Ejecucion de pruebas con Jest
+        run: npm test
+
+  # Trabajo 2: Construcción y publicación de la imagen en Docker Hub
+  build-and-push:
+    name: 2. Construccion y Publicacion en Docker Hub
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descarga del repositorio
+        uses: actions/checkout@v4
+
+      - name: Inicio de sesion en Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Configuracion de Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Compilacion y publicacion de la imagen Docker
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/api-libros:${{ github.sha }}
+            ${{ secrets.DOCKER_USERNAME }}/api-libros:latest
+
+  # Trabajo 3: Despliegue seguro en EC2 con Zero-Downtime y verificacion
+  deploy:
+    name: 3. Despliegue Automatizado en AWS EC2
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Despliegue en EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+            echo "=========================================================="
+            echo "Iniciando despliegue de version: ${{ github.sha }}"
+            echo "=========================================================="
+
+            # 1. Descarga de la nueva imagen etiquetada con el SHA del commit
+            docker pull ${{ secrets.DOCKER_USERNAME }}/api-libros:${{ github.sha }}
+
+            # 2. Despliegue en contenedor provisional (puerto 3001) para verificacion de salud
+            docker rm -f api-libros-provisional 2>/dev/null || true
+            docker run -d --name api-libros-provisional \
+              --env-file /home/ubuntu/.env \
+              -p 3001:3000 \
+              ${{ secrets.DOCKER_USERNAME }}/api-libros:${{ github.sha }}
+
+            # Espera a que el servidor inicialice
+            sleep 5
+
+            # 3. Verificacion de salud (Health Check) en /health y consulta en /libros
+            echo "Ejecutando verificacion de salud previa..."
+            if curl -sf http://127.0.0.1:3001/health && curl -sf http://127.0.0.1:3001/libros > /dev/null; then
+              echo "Verificacion exitosa. Conmutando version de produccion..."
+              
+              # Detener y eliminar contenedor de produccion anterior
+              docker stop api-libros 2>/dev/null || true
+              docker rm api-libros 2>/dev/null || true
+              
+              # Detener el provisional y arrancar la nueva version en el puerto 3000 (detras de Nginx)
+              docker stop api-libros-provisional
+              docker rm api-libros-provisional
+
+              docker run -d --name api-libros \
+                --restart unless-stopped \
+                --env-file /home/ubuntu/.env \
+                -p 127.0.0.1:3000:3000 \
+                ${{ secrets.DOCKER_USERNAME }}/api-libros:${{ github.sha }}
+
+              # Limpieza de imagenes huerfanas
+              docker image prune -f
+              echo "Despliegue finalizado con exito."
+            else
+              echo "Error: La nueva version no supero el health check. Abortando despliegue y preservando version previa."
+              docker stop api-libros-provisional 2>/dev/null || true
+              docker rm api-libros-provisional 2>/dev/null || true
+              exit 1
+            fi

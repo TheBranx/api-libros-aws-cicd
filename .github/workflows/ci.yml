@@ -1,0 +1,28 @@
+name: CI - Integracion Continua
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    name: Pruebas Automatizadas y Calidad
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Descarga del repositorio (Checkout)
+        uses: actions/checkout@v4
+
+      - name: 2. Configuracion del entorno Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: 3. Instalacion determinista de dependencias
+        run: npm ci
+
+      - name: 4. Ejecucion de suite de pruebas automatizadas con Jest
+        run: npm test

@@ -1,0 +1,17 @@
+require('dotenv').config();
+const mysql = require('mysql2/promise');
+
+// Configuración del pool de conexiones hacia Amazon RDS MySQL
+const pool = mysql.createPool({
+  host: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT || '3306', 10),
+  user: process.env.DB_USER || 'admin',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'db_libros',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+  connectTimeout: 10000
+});
+
+module.exports = pool;
