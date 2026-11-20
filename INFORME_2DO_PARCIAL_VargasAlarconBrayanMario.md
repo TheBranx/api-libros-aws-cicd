@@ -1,14 +1,14 @@
 # Universidad Mayor, Real y Pontificia de San Francisco Xavier de Chuquisaca
 # Facultad de Tecnología
 
-# Examen Segundo Parcial — Trabajando en la Nube (COM610) ☁️
+# Examen Segundo Parcial
 
 <p align="center">
   <img src="evidencias/00_caratula.png" alt="Carátula USFX" width="550">
 </p>
 
 - **Carrera:** Ingeniería en Telecomunicaciones
-- **Materia / Semestre:** Trabajando en la Nube (COM610) — Semestre 2/2026
+- **Materia:** Trabajando en la Nube
 - **Docente:** Ing. Marcelo Quispe Ortega
 - **Estudiante:** Vargas Alarcón Brayan Mario
 - **Repositorio GitHub:** [https://github.com/TheBranx/api-libros-aws-cicd](https://github.com/TheBranx/api-libros-aws-cicd)
