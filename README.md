@@ -25,10 +25,10 @@ Proyecto evaluativo para el **Segundo Parcial** de la asignatura **Trabajando en
 
 ## 🌐 Enlaces Públicos de Verificación y Flujos
 
-- **Endpoint de Diagnóstico y Salud:** [http://52.15.197.239/health](http://52.15.197.239/health)
+- **Endpoint de Diagnóstico y Salud (Versión 1.1.0 activa):** [http://52.15.197.239/health](http://52.15.197.239/health)
 - **Endpoint del Catálogo de Libros (RDS):** [http://52.15.197.239/libros](http://52.15.197.239/libros)
 - **Ejecución Exitosa CI (Jest & Lint):** [Ver Run de CI en GitHub Actions](https://github.com/TheBranx/api-libros-aws-cicd/actions/workflows/ci.yml)
-- **Ejecución Exitosa CD (Build, Push & Deploy):** [Ver Run de CD #1 en GitHub Actions](https://github.com/TheBranx/api-libros-aws-cicd/actions/runs/44632184764)
+- **Ejecución Exitosa CD (Build, Push & Deploy en EC2):** [Ver Run de CD #2 en GitHub Actions](https://github.com/TheBranx/api-libros-aws-cicd/actions/runs/44642468474)
 
 ---
 
@@ -70,8 +70,8 @@ Proyecto evaluativo para el **Segundo Parcial** de la asignatura **Trabajando en
 - **Sistema Operativo:** Ubuntu Server 24.04 LTS (x86_64, AMI `ami-06013a79bb46505e8`)
 - **IP Pública:** `52.15.197.239` | **IP Privada:** `172.31.32.254`
 - **Grupo de Seguridad:** `ec2-libros-bmva` (`sg-00ea7f80c1b146176`)
-  - Puerto 80 (HTTP) -> `0.0.0.0/0` (Acceso público global)
-  - Puerto 22 (SSH) -> `0.0.0.0/0` (Para despliegue por GitHub Actions y administración)
+  - Puerto 80 (HTTP) -> `0.0.0.0/0` (Acceso público web)
+  - Puerto 22 (SSH) -> `0.0.0.0/0` (Para despliegue automatizado por GitHub Actions y gestión SSH)
 
 ### 2. Base de Datos Gestionada (Amazon RDS)
 - **Identificador:** `rds-libros-brayan-vargas`
@@ -81,7 +81,7 @@ Proyecto evaluativo para el **Segundo Parcial** de la asignatura **Trabajando en
 - **Acceso Público:** **No (Deshabilitado / Totalmente Privado)**
 - **Nombre de Base de Datos:** `db_libros`
 - **Grupo de Seguridad:** `rds-libros-bmva` (`sg-0a146f9f199590cad`)
-  - Puerto 3306 (MySQL) -> **Exclusivamente desde `sg-00ea7f80c1b146176` (Grupo de seguridad de EC2)**. No accesible desde Internet.
+  - Puerto 3306 (MySQL) -> **Exclusivamente desde `sg-00ea7f80c1b146176` (Grupo de seguridad de EC2)**. No accesible desde Internet bajo ningún concepto.
 
 ---
 
@@ -138,7 +138,7 @@ curl http://localhost:3000/health
 
 ### Ejemplos de Verificación con `curl`:
 
-**1. Diagnóstico de Salud:**
+**1. Diagnóstico de Salud (versión 1.1.0):**
 ```bash
 curl -i http://52.15.197.239/health
 ```
@@ -216,3 +216,8 @@ curl -i -X DELETE http://52.15.197.239/libros/6
 | 14 | Ejecución exitosa de los 3 jobs del pipeline de CD | [`14_github_actions_cd_3jobs_success.png`](./evidencias/14_github_actions_cd_3jobs_success.png) |
 | 15 | Log en vivo del despliegue en EC2 via SSH con Zero-Downtime | [`15_cd_deploy_ssh_live_log.png`](./evidencias/15_cd_deploy_ssh_live_log.png) |
 | 16 | Comprobación de Health Check en `/health` y conmutación a producción | [`16_cd_deploy_healthcheck_switch.png`](./evidencias/16_cd_deploy_healthcheck_switch.png) |
+| 17 | Actualización de reglas de SSH en Grupo de Seguridad de EC2 para runner de GitHub Actions | [`17_ec2_security_group_ssh_rules_updated.png`](./evidencias/17_ec2_security_group_ssh_rules_updated.png) |
+| 18 | Despliegue de actualización v1.1.0 con los 3 jobs en verde en CD Run #2 | [`18_cd_run2_version_1_1_0_success_3jobs.png`](./evidencias/18_cd_run2_version_1_1_0_success_3jobs.png) |
+| 19 | Vista general de ejecuciones CI y CD superadas en GitHub Actions | [`19_actions_overview_both_green.png`](./evidencias/19_actions_overview_both_green.png) |
+| 20 | Comprobación externa en producción reflejando la nueva versión 1.1.0 en vivo | [`20_api_version_1_1_0_verified.png`](./evidencias/20_api_version_1_1_0_verified.png) |
+| 21 | Publicación y versionado de imágenes con tags SHA y latest en Docker Hub | [`21_dockerhub_tags_published.png`](./evidencias/21_dockerhub_tags_published.png) |
