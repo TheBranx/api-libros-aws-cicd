@@ -8,7 +8,7 @@
 ![AWS RDS](https://img.shields.io/badge/AWS-RDS%20MySQL%208.4-blue?logo=mysql)
 
 - **Carrera:** Ingeniería en Telecomunicaciones
-- **Asignatura:** Trabajando en la Nube (COM610) - Semestre 2/2026
+- **Asignatura:** Trabajando en la Nube
 - **Docente:** Ing. Marcelo Quispe Ortega
 - **Estudiante:** Vargas Alarcón Brayan Mario
 - **Repositorio GitHub:** [https://github.com/TheBranx/api-libros-aws-cicd](https://github.com/TheBranx/api-libros-aws-cicd)
