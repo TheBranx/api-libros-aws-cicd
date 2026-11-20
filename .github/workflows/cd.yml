@@ -5,7 +5,6 @@ on:
     branches: [ main ]
 
 jobs:
-  # Trabajo 1: Ejecución obligatoria de pruebas antes de construir
   test:
     name: 1. Pruebas Automatizadas
     runs-on: ubuntu-latest
@@ -25,7 +24,6 @@ jobs:
       - name: Ejecucion de pruebas con Jest
         run: npm test
 
-  # Trabajo 2: Construcción y publicación de la imagen en Docker Hub
   build-and-push:
     name: 2. Construccion y Publicacion en Docker Hub
     needs: test
@@ -53,7 +51,6 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/api-libros:${{ github.sha }}
             ${{ secrets.DOCKER_USERNAME }}/api-libros:latest
 
-  # Trabajo 3: Despliegue seguro en EC2 con Zero-Downtime y verificacion
   deploy:
     name: 3. Despliegue Automatizado en AWS EC2
     needs: build-and-push
