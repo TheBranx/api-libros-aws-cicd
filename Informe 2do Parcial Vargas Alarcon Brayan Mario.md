@@ -1,5 +1,5 @@
 # Universidad Mayor, Real y Pontificia de San Francisco Xavier de Chuquisaca
-# Facultad de Tecnología
+# Facultad de Ciencias y Tecnología
 
 # Examen Segundo Parcial
 
