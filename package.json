@@ -1,6 +1,6 @@
 {
   "name": "api-libros-aws",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "API REST para gestion de libros en Amazon EC2 con persistencia en Amazon RDS MySQL y CI/CD",
   "main": "server.js",
   "scripts": {
