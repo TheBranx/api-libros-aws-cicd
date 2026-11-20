@@ -1,10 +1,4 @@
-# ==============================================================
-# Multi-Stage Dockerfile optimizado para producción
-# Materia: Trabajando en la Nube (COM610)
-# Estudiante: Vargas Alarcon Brayan Mario
-# ==============================================================
-
-# Etapa 1: Builder (Instalación limpia de dependencias de producción)
+# Builder (Instalación limpia de dependencias de producción)
 FROM node:20-alpine AS builder
 WORKDIR /usr/src/app
 
@@ -13,7 +7,7 @@ RUN npm ci --only=production && npm cache clean --force
 
 COPY app.js server.js db.js ./
 
-# Etapa 2: Runtime ligero
+# Runtime ligero
 FROM node:20-alpine
 WORKDIR /usr/src/app
 
