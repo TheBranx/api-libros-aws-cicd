@@ -3,10 +3,8 @@ const pool = require('./db');
 
 const app = express();
 
-// Middleware para parsear JSON en el cuerpo de las peticiones
 app.use(express.json());
 
-// Endpoint de diagnóstico de salud (Requisito Ejercicio 1 y 2)
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'ok',
@@ -17,7 +15,6 @@ app.get('/health', (req, res) => {
   });
 });
 
-// GET /libros - Lista todos los libros almacenados en Amazon RDS
 app.get('/libros', async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT id, titulo, autor, anio_publicacion, creado_en FROM libros ORDER BY id ASC');
@@ -28,7 +25,6 @@ app.get('/libros', async (req, res) => {
   }
 });
 
-// GET /libros/:id - Obtiene un libro específico por ID
 app.get('/libros/:id', async (req, res) => {
   const { id } = req.params;
   const numId = parseInt(id, 10);
@@ -53,21 +49,17 @@ app.get('/libros/:id', async (req, res) => {
   }
 });
 
-// POST /libros - Crea un nuevo libro con validaciones estrictas y consultas parametrizadas
 app.post('/libros', async (req, res) => {
   const { titulo, autor, anio_publicacion } = req.body;
 
-  // Validación: titulo no vacío
   if (!titulo || typeof titulo !== 'string' || titulo.trim() === '') {
     return res.status(400).json({ error: 'El campo "titulo" es obligatorio y no puede estar vacio' });
   }
 
-  // Validación: autor no vacío
   if (!autor || typeof autor !== 'string' || autor.trim() === '') {
     return res.status(400).json({ error: 'El campo "autor" es obligatorio y no puede estar vacio' });
   }
 
-  // Validación: anio_publicacion debe ser un entero válido
   const anio = Number(anio_publicacion);
   if (anio_publicacion === undefined || anio_publicacion === null || !Number.isInteger(anio) || anio <= 0) {
     return res.status(400).json({ error: 'El campo "anio_publicacion" debe ser un numero entero valido y positivo' });
@@ -93,7 +85,6 @@ app.post('/libros', async (req, res) => {
   }
 });
 
-// PUT /libros/:id - Actualiza un libro existente
 app.put('/libros/:id', async (req, res) => {
   const { id } = req.params;
   const numId = parseInt(id, 10);
@@ -103,17 +94,14 @@ app.put('/libros/:id', async (req, res) => {
 
   const { titulo, autor, anio_publicacion } = req.body;
 
-  // Validación: titulo
   if (!titulo || typeof titulo !== 'string' || titulo.trim() === '') {
     return res.status(400).json({ error: 'El campo "titulo" es obligatorio y no puede estar vacio' });
   }
 
-  // Validación: autor
   if (!autor || typeof autor !== 'string' || autor.trim() === '') {
     return res.status(400).json({ error: 'El campo "autor" es obligatorio y no puede estar vacio' });
   }
 
-  // Validación: anio_publicacion
   const anio = Number(anio_publicacion);
   if (anio_publicacion === undefined || anio_publicacion === null || !Number.isInteger(anio) || anio <= 0) {
     return res.status(400).json({ error: 'El campo "anio_publicacion" debe ser un numero entero valido y positivo' });
@@ -142,7 +130,6 @@ app.put('/libros/:id', async (req, res) => {
   }
 });
 
-// DELETE /libros/:id - Elimina un libro existente
 app.delete('/libros/:id', async (req, res) => {
   const { id } = req.params;
   const numId = parseInt(id, 10);
