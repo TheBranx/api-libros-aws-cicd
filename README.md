@@ -7,19 +7,13 @@
 ![AWS EC2](https://img.shields.io/badge/AWS-EC2%20Ubuntu%2024.04-orange?logo=amazon-aws)
 ![AWS RDS](https://img.shields.io/badge/AWS-RDS%20MySQL%208.4-blue?logo=mysql)
 
-Proyecto evaluativo para el **Segundo Parcial** de la asignatura **Trabajando en la Nube (COM610)** de la **Universidad Mayor, Real y Pontificia de San Francisco Xavier de Chuquisaca**.
-
-| Campo | Detalle Institucional |
-|---|---|
-| **Universidad** | Universidad Mayor, Real y Pontificia de San Francisco Xavier de Chuquisaca |
-| **Facultad** | Facultad de Tecnología |
-| **Carrera** | Ingeniería en Telecomunicaciones |
-| **Asignatura** | Trabajando en la Nube (COM610) - Semestre 2/2026 |
-| **Docente** | Ing. Marcelo Quispe Ortega |
-| **Estudiante** | Vargas Alarcón Brayan Mario |
-| **Repositorio GitHub** | [https://github.com/TheBranx/api-libros-aws-cicd](https://github.com/TheBranx/api-libros-aws-cicd) |
-| **Docker Hub Registry** | [https://hub.docker.com/r/thebranx/api-libros](https://hub.docker.com/r/thebranx/api-libros) |
-| **IP Pública de Producción (EC2)** | `52.15.197.239` |
+- **Carrera:** Ingeniería en Telecomunicaciones
+- **Asignatura:** Trabajando en la Nube (COM610) - Semestre 2/2026
+- **Docente:** Ing. Marcelo Quispe Ortega
+- **Estudiante:** Vargas Alarcón Brayan Mario
+- **Repositorio GitHub:** [https://github.com/TheBranx/api-libros-aws-cicd](https://github.com/TheBranx/api-libros-aws-cicd)
+- **Docker Hub Registry:** [https://hub.docker.com/r/thebranx/api-libros](https://hub.docker.com/r/thebranx/api-libros)
+- **IP Pública de Producción (EC2):** `52.15.197.239`
 
 ---
 
@@ -114,7 +108,6 @@ Las pruebas unitarias y de integración utilizan **Jest** y **Supertest** con un
 npm ci
 npm test
 ```
-*Salida: 16 de 16 pruebas superadas exitosamente.*
 
 ### 4. Compilar y Ejecutar con Docker Localmente
 ```bash
