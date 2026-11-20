@@ -1,45 +1,42 @@
+# Universidad Mayor, Real y Pontificia de San Francisco Xavier de Chuquisaca
+# Facultad de Tecnología
+
 # Examen Segundo Parcial — Trabajando en la Nube (COM610) ☁️
 
 <p align="center">
   <img src="evidencias/00_caratula.png" alt="Carátula USFX" width="550">
 </p>
 
-| Campo | Detalle Institucional |
-|---|---|
-| **Universidad** | Universidad Mayor, Real y Pontificia de San Francisco Xavier de Chuquisaca |
-| **Facultad** | Facultad de Tecnología |
-| **Carrera** | Ingeniería en Telecomunicaciones |
-| **Materia / Semestre** | Trabajando en la Nube (COM610) — Semestre 2/2026 |
-| **Docente** | Ing. Marcelo Quispe Ortega |
-| **Estudiante** | Vargas Alarcón Brayan Mario |
-| **Repositorio GitHub** | [https://github.com/TheBranx/api-libros-aws-cicd](https://github.com/TheBranx/api-libros-aws-cicd) |
-| **Docker Hub Registry** | [https://hub.docker.com/r/thebranx/api-libros](https://hub.docker.com/r/thebranx/api-libros) |
-| **URL Pública API (EC2)** | [http://52.15.197.239/health](http://52.15.197.239/health) · [http://52.15.197.239/libros](http://52.15.197.239/libros) |
-| **Workflow Run CI** | [https://github.com/TheBranx/api-libros-aws-cicd/actions/workflows/ci.yml](https://github.com/TheBranx/api-libros-aws-cicd/actions/workflows/ci.yml) |
-| **Workflow Run CD** | [https://github.com/TheBranx/api-libros-aws-cicd/actions/runs/44642468474](https://github.com/TheBranx/api-libros-aws-cicd/actions/runs/44642468474) |
+- **Carrera:** Ingeniería en Telecomunicaciones
+- **Materia / Semestre:** Trabajando en la Nube (COM610) — Semestre 2/2026
+- **Docente:** Ing. Marcelo Quispe Ortega
+- **Estudiante:** Vargas Alarcón Brayan Mario
+- **Repositorio GitHub:** [https://github.com/TheBranx/api-libros-aws-cicd](https://github.com/TheBranx/api-libros-aws-cicd)
+- **Docker Hub Registry:** [https://hub.docker.com/r/thebranx/api-libros](https://hub.docker.com/r/thebranx/api-libros)
+- **URL Pública API (EC2):** [http://52.15.197.239/health](http://52.15.197.239/health) · [http://52.15.197.239/libros](http://52.15.197.239/libros)
+- **Workflow Run CI:** [https://github.com/TheBranx/api-libros-aws-cicd/actions/workflows/ci.yml](https://github.com/TheBranx/api-libros-aws-cicd/actions/workflows/ci.yml)
+- **Workflow Run CD:** [https://github.com/TheBranx/api-libros-aws-cicd/actions/runs/44642468474](https://github.com/TheBranx/api-libros-aws-cicd/actions/runs/44642468474)
 
 ---
 
 ## 1. Introducción y Enlaces de Verificación de la Tarea
-
-En este informe detallo de forma estrictamente individual la resolución integral de los dos ejercicios planteados en el Segundo Parcial de Trabajando en la Nube (COM610):
 
 - **Tema 4 (Ejercicio 1):** Implementación de una API RESTful con Node.js y Express para gestionar un catálogo de libros en una instancia Amazon EC2 Linux, con persistencia relacional en una base de datos Amazon RDS for MySQL privada, exponiendo el servicio mediante el proxy inverso Nginx en el puerto 80 y garantizando que los puertos internos 3000 y 3306 permanezcan cerrados al tráfico público de Internet.
 - **Tema 5 (Ejercicio 2):** Automatización completa del flujo de pruebas unitarias/integración aisladas (Jest y Supertest), empaquetamiento en contenedor Docker multi-stage optimizado y despliegue continuo hacia Amazon EC2 mediante GitHub Actions, con verificación de salud previa (Zero-Downtime) y preservación de versión ante fallos (Rollback automático).
 
 ---
 
-## 2. Ejercicio 1 (Tema 4) — API REST en EC2 con Amazon RDS MySQL
+## 2. Ejercicio 1 — API REST en EC2 con Amazon RDS MySQL
 
 ### 2.1 Configuración de Grupos de Seguridad (EC2 y RDS)
 
 Para garantizar la seguridad de la arquitectura en la VPC de AWS, configuré dos grupos de seguridad separados con reglas de mínimo privilegio:
 
 ![Figura 1](evidencias/01_sg_ec2_libros_inbound_rules.png)
-*Figura 1. Reglas de entrada del Grupo de Seguridad de EC2 (`ec2-libros-bmva`). Se configuró inicialmente el puerto SSH (22) restringido a mi dirección IP pública (`181.188.158.242/32`) y el puerto HTTP (80) abierto a Internet (`0.0.0.0/0`).*
+Reglas de entrada del Grupo de Seguridad de EC2 (`ec2-libros-bmva`). Se configuró inicialmente el puerto SSH (22) restringido a mi dirección IP pública (`181.188.158.242/32`) y el puerto HTTP (80) abierto a Internet (`0.0.0.0/0`).
 
 ![Figura 2](evidencias/02_sg_rds_libros_inbound_rules.png)
-*Figura 2. Reglas de entrada del Grupo de Seguridad de RDS (`rds-libros-bmva`). Se autorizó el puerto MySQL/MariaDB (3306) únicamente desde el ID del grupo de seguridad de EC2 (`sg-00ea7f80c1b146176`), imposibilitando el acceso directo desde el exterior.*
+Reglas de entrada del Grupo de Seguridad de RDS (`rds-libros-bmva`). Se autorizó el puerto MySQL/MariaDB (3306) únicamente desde el ID del grupo de seguridad de EC2 (`sg-00ea7f80c1b146176`), imposibilitando el acceso directo desde el exterior.
 
 ---
 
@@ -48,10 +45,10 @@ Para garantizar la seguridad de la arquitectura en la VPC de AWS, configuré dos
 Creé una instancia EC2 con Ubuntu Server 24.04 LTS x86_64 en la región Ohio (`us-east-2`), asociada al grupo de seguridad `ec2-libros-bmva`:
 
 ![Figura 3](evidencias/03_ec2_instance_running.png)
-*Figura 3. Instancia EC2 `ec2-libros-brayan-vargas` en estado 'En ejecución' con IP pública `52.15.197.239` en la zona de disponibilidad `us-east-2c`.*
+Instancia EC2 `ec2-libros-brayan-vargas` en estado 'En ejecución' con IP pública `52.15.197.239` en la zona de disponibilidad `us-east-2c`.
 
 ![Figura 4](evidencias/03_ec2_libros_security_tab.png)
-*Figura 4. Detalle de la pestaña Seguridad de la instancia EC2, confirmando la asignación del grupo de seguridad `ec2-libros-bmva`.*
+Detalle de la pestaña Seguridad de la instancia EC2, confirmando la asignación del grupo de seguridad `ec2-libros-bmva`.
 
 ---
 
@@ -60,16 +57,16 @@ Creé una instancia EC2 con Ubuntu Server 24.04 LTS x86_64 en la región Ohio (`
 Aprovisioné la base de datos gestionada en la misma VPC de la instancia EC2, deshabilitando el acceso público para cumplir el requisito estricto de persistencia privada:
 
 ![Figura 5](evidencias/04_rds_databases_list_creating.png)
-*Figura 5. Instancia de base de datos `rds-libros-brayan-vargas` aprovisionada con el motor MySQL Community en Amazon RDS.*
+Instancia de base de datos `rds-libros-brayan-vargas` aprovisionada con el motor MySQL Community en Amazon RDS.
 
 ![Figura 6](evidencias/05_rds_details_summary.png)
-*Figura 6. Resumen de configuración de Amazon RDS: clase de instancia `db.t4g.micro` (Capa Gratuita) y motor MySQL 8.4 LTS.*
+Resumen de configuración de Amazon RDS: clase de instancia `db.t4g.micro` (Capa Gratuita) y motor MySQL 8.4 LTS.
 
 ![Figura 7](evidencias/06_rds_details_connectivity_sg.png)
-*Figura 7. Configuración de conectividad privada de Amazon RDS: 'Acceso público' establecido en 'No' y grupo de seguridad asociado `rds-libros-bmva`.*
+Configuración de conectividad privada de Amazon RDS: 'Acceso público' establecido en 'No' y grupo de seguridad asociado `rds-libros-bmva`.
 
 ![Figura 8](evidencias/07_rds_endpoint_view.png)
-*Figura 8. Endpoint privado de conexión a RDS (`rds-libros-brayan-vargas.cfmko28ays3b.us-east-2.rds.amazonaws.com:3306`).*
+Endpoint privado de conexión a RDS (`rds-libros-brayan-vargas.cfmko28ays3b.us-east-2.rds.amazonaws.com:3306`).
 
 ---
 
@@ -78,7 +75,7 @@ Aprovisioné la base de datos gestionada en la misma VPC de la instancia EC2, de
 Me conecté por SSH al servidor EC2 y desde allí ejecuté el script `db.sql` utilizando el cliente oficial de MySQL para crear la base de datos `db_libros`, la tabla `libros` y poblar los registros iniciales:
 
 ![Figura 9](evidencias/09_rds_mysql_cli_libros_table.png)
-*Figura 9. Conexión mediante cliente MySQL desde la instancia EC2 hacia RDS. Se comprueba la estructura de la tabla `libros` (`id`, `titulo`, `autor`, `anio_publicacion`, `creado_en`) y la consulta de los 5 libros iniciales.*
+Conexión mediante cliente MySQL desde la instancia EC2 hacia RDS. Se comprueba la estructura de la tabla `libros` (`id`, `titulo`, `autor`, `anio_publicacion`, `creado_en`) y la consulta de los 5 libros iniciales.
 
 ---
 
@@ -87,18 +84,18 @@ Me conecté por SSH al servidor EC2 y desde allí ejecuté el script `db.sql` ut
 Configuré Nginx en `/etc/nginx/sites-available/default` como proxy inverso escuchando en el puerto 80 y reenviando el tráfico hacia `http://127.0.0.1:3000`. Luego ejecuté la suite de pruebas desde mi equipo mediante PowerShell con `Invoke-RestMethod`:
 
 ![Figura 10](evidencias/10_api_crud_endpoints_verification.png)
-*Figura 10. Verificación exhaustiva de todas las operaciones CRUD en la API pública (`http://52.15.197.239`): `GET /health` (200), `GET /libros` (200), `POST /libros` (201), `GET /libros/:id` (200), `PUT /libros/:id` (200), validación de datos erróneos (400 Bad Request), `DELETE /libros/:id` (200) y comprobación de recurso eliminado (404 Not Found).*
+Verificación exhaustiva de todas las operaciones CRUD en la API pública (`http://52.15.197.239`): `GET /health` (200), `GET /libros` (200), `POST /libros` (201), `GET /libros/:id` (200), `PUT /libros/:id` (200), validación de datos erróneos (400 Bad Request), `DELETE /libros/:id` (200) y comprobación de recurso eliminado (404 Not Found).
 
 ---
 
-## 3. Ejercicio 2 (Tema 5) — CI/CD con GitHub Actions y Docker
+## 3. Ejercicio 2 — CI/CD con GitHub Actions y Docker
 
 ### 3.1 Pruebas Automatizadas con Jest y Supertest
 
 Diseñé 16 pruebas automatizadas en `tests/app.test.js` utilizando un doble de prueba (Mock) con `jest.mock('../db')`. De este modo, las pruebas se ejecutan de manera aislada y reproducible en cualquier entorno de CI sin requerir una instancia real de RDS:
 
 ![Figura 11](evidencias/11_jest_unit_tests_passed.png)
-*Figura 11. Ejecución de `npm test` con Jest y Supertest: 16 de 16 pruebas unitarias y de integración pasaron en 1.62 segundos.*
+Ejecución de `npm test` con Jest y Supertest: 16 de 16 pruebas unitarias y de integración pasaron en 1.62 segundos.
 
 ---
 
@@ -107,13 +104,13 @@ Diseñé 16 pruebas automatizadas en `tests/app.test.js` utilizando un doble de 
 Creé el repositorio público `TheBranx/api-libros-aws-cicd` y registré los secretos necesarios para el flujo de CI/CD:
 
 ![Figura 12](evidencias/08_github_repository_created.png)
-*Figura 12. Creación del repositorio público `TheBranx/api-libros-aws-cicd` en GitHub sin archivos iniciales.*
+Creación del repositorio público `TheBranx/api-libros-aws-cicd` en GitHub sin archivos iniciales.
 
 ![Figura 13](evidencias/12_github_actions_secrets_configured.png)
-*Figura 13. Configuración segura de los 5 Repository Secrets en GitHub Actions: `DOCKER_USERNAME`, `DOCKER_PASSWORD`, `SSH_HOST`, `SSH_USER` y `SSH_PRIVATE_KEY`.*
+Configuración segura de los 5 Repository Secrets en GitHub Actions: `DOCKER_USERNAME`, `DOCKER_PASSWORD`, `SSH_HOST`, `SSH_USER` y `SSH_PRIVATE_KEY`.
 
 ![Figura 14](evidencias/17_ec2_security_group_ssh_rules_updated.png)
-*Figura 14. Modificación de la regla de entrada de SSH (22) en el Grupo de Seguridad de EC2 a `0.0.0.0/0` para autorizar las conexiones remotas del runner de GitHub Actions.*
+Modificación de la regla de entrada de SSH (22) en el Grupo de Seguridad de EC2 a `0.0.0.0/0` para autorizar las conexiones remotas del runner de GitHub Actions.
 
 ---
 
@@ -122,7 +119,7 @@ Creé el repositorio público `TheBranx/api-libros-aws-cicd` y registré los sec
 El archivo `.github/workflows/ci.yml` se dispara ante eventos `push` y `pull_request` sobre la rama `main`, ejecutando `npm ci` y `npm test`:
 
 ![Figura 15](evidencias/13_github_actions_ci_success.png)
-*Figura 15. Ejecución exitosa del workflow de CI (`ci.yml`) en GitHub Actions con todas las pruebas y validaciones superadas en 17 segundos.*
+Ejecución exitosa del workflow de CI (`ci.yml`) en GitHub Actions con todas las pruebas y validaciones superadas en 17 segundos.
 
 ---
 
@@ -131,13 +128,13 @@ El archivo `.github/workflows/ci.yml` se dispara ante eventos `push` y `pull_req
 El workflow `.github/workflows/cd.yml` implementa una cadena de 3 trabajos dependientes (`test` $\rightarrow$ `build-and-push` $\rightarrow$ `deploy`) que se ejecutan únicamente ante cambios en la rama `main`:
 
 ![Figura 16](evidencias/14_github_actions_cd_3jobs_success.png)
-*Figura 16. Pipeline de CD con los 3 jobs completados en verde: 1. Pruebas Automatizadas (20s) -> 2. Construcción y Publicación en Docker Hub (22s) -> 3. Despliegue Automatizado en EC2 (42s).*
+Pipeline de CD con los 3 jobs completados en verde: 1. Pruebas Automatizadas (20s) -> 2. Construcción y Publicación en Docker Hub (22s) -> 3. Despliegue Automatizado en EC2 (42s).
 
 ![Figura 17](evidencias/15_cd_deploy_ssh_live_log.png)
-*Figura 17. Registro en vivo del job de despliegue mediante SSH: descarga de la imagen etiquetada con el SHA del commit y arranque del contenedor provisional en el puerto 3001.*
+Registro en vivo del job de despliegue mediante SSH: descarga de la imagen etiquetada con el SHA del commit y arranque del contenedor provisional en el puerto 3001.
 
 ![Figura 18](evidencias/16_cd_deploy_healthcheck_switch.png)
-*Figura 18. Salida del script de despliegue: verificación de salud en `/health` y `/libros` en el contenedor provisional, detención del contenedor previo y conmutación al puerto de producción `127.0.0.1:3000` sin interrupción de servicio.*
+Salida del script de despliegue: verificación de salud en `/health` y `/libros` en el contenedor provisional, detención del contenedor previo y conmutación al puerto de producción `127.0.0.1:3000` sin interrupción de servicio.
 
 ---
 
@@ -146,16 +143,16 @@ El workflow `.github/workflows/cd.yml` implementa una cadena de 3 trabajos depen
 Para demostrar el funcionamiento del flujo ante una nueva versión en producción, actualicé `package.json` y el endpoint `/health` a la versión `1.1.0` y realicé un push a `main`:
 
 ![Figura 19](evidencias/18_cd_run2_version_1_1_0_success_3jobs.png)
-*Figura 19. Ejecución exitosa del pipeline de CD (Run #2) desplegando automáticamente la actualización a la versión 1.1.0 en la instancia EC2.*
+Ejecución exitosa del pipeline de CD (Run #2) desplegando automáticamente la actualización a la versión 1.1.0 en la instancia EC2.
 
 ![Figura 20](evidencias/19_actions_overview_both_green.png)
-*Figura 20. Vista general de GitHub Actions con todas las ejecuciones de CI y CD en estado satisfactorio (100% verde).*
+Vista general de GitHub Actions con todas las ejecuciones de CI y CD en estado satisfactorio (100% verde).
 
 ![Figura 21](evidencias/20_api_version_1_1_0_verified.png)
-*Figura 21. Verificación externa en producción mediante `curl` reflejando el cambio de versión a '1.1.0' en `/health` y consulta a `/libros` comprobando la persistencia activa en Amazon RDS.*
+Verificación externa en producción mediante `curl` reflejando el cambio de versión a '1.1.0' en `/health` y consulta a `/libros` comprobando la persistencia activa en Amazon RDS.
 
 ![Figura 22](evidencias/21_dockerhub_tags_published.png)
-*Figura 22. Publicación y versionado en el registro público de Docker Hub (`thebranx/api-libros`) con las etiquetas `latest` y los hashes SHA de cada commit.*
+Publicación y versionado en el registro público de Docker Hub (`thebranx/api-libros`) con las etiquetas `latest` y los hashes SHA de cada commit.
 
 ---
 
