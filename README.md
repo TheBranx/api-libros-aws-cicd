@@ -1,4 +1,4 @@
-# Catálogo de Libros API — AWS EC2 & Amazon RDS con CI/CD automatizado 🚀
+# Catálogo de Libros API — AWS EC2 & Amazon RDS con CI/CD automatizado
 
 [![CI - Integracion Continua](https://github.com/TheBranx/api-libros-aws-cicd/actions/workflows/ci.yml/badge.svg)](https://github.com/TheBranx/api-libros-aws-cicd/actions/workflows/ci.yml)
 [![CD - Despliegue Continuo con Docker en EC2](https://github.com/TheBranx/api-libros-aws-cicd/actions/workflows/cd.yml/badge.svg)](https://github.com/TheBranx/api-libros-aws-cicd/actions/workflows/cd.yml)
@@ -23,7 +23,7 @@ Proyecto evaluativo para el **Segundo Parcial** de la asignatura **Trabajando en
 
 ---
 
-## 🌐 Enlaces Públicos de Verificación y Flujos
+## Enlaces Públicos de Verificación y Flujos
 
 - **Endpoint de Diagnóstico y Salud (Versión 1.1.0 activa):** [http://52.15.197.239/health](http://52.15.197.239/health)
 - **Endpoint del Catálogo de Libros (RDS):** [http://52.15.197.239/libros](http://52.15.197.239/libros)
@@ -32,7 +32,7 @@ Proyecto evaluativo para el **Segundo Parcial** de la asignatura **Trabajando en
 
 ---
 
-## 🏗️ Arquitectura de la Solución
+## Arquitectura de la Solución
 
 ```
                                   VPC por Defecto (us-east-2)
@@ -60,7 +60,7 @@ Proyecto evaluativo para el **Segundo Parcial** de la asignatura **Trabajando en
 
 ---
 
-## 📋 Recursos de AWS Utilizados
+## Recursos de AWS Utilizados
 
 ### 1. Servidor de Cómputo (Amazon EC2)
 - **Nombre:** `ec2-libros-brayan-vargas`
@@ -85,7 +85,7 @@ Proyecto evaluativo para el **Segundo Parcial** de la asignatura **Trabajando en
 
 ---
 
-## 💻 Ejecución Local y Pruebas
+## Ejecución Local y Pruebas
 
 ### 1. Clonar el repositorio
 ```bash
@@ -176,7 +176,7 @@ curl -i -X DELETE http://52.15.197.239/libros/6
 
 ---
 
-## 🔄 Flujo de CI/CD (GitHub Actions)
+## Flujo de CI/CD (GitHub Actions)
 
 ### 1. Integración Continua (`.github/workflows/ci.yml`)
 - Se activa en cada `push` y `pull_request` hacia la rama `main`.
@@ -196,7 +196,7 @@ curl -i -X DELETE http://52.15.197.239/libros/6
 
 ---
 
-## 📸 Galería de Evidencias
+## Galería de Evidencias
 
 | N° | Evidencia | Archivo |
 |:---:|---|---|
