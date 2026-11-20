@@ -2,7 +2,6 @@ const request = require('supertest');
 const pool = require('../db');
 const app = require('../app');
 
-// Mock completo de la capa de base de datos MySQL (Double de prueba para CI y pruebas unitarias aisladas)
 jest.mock('../db', () => ({
   query: jest.fn()
 }));
