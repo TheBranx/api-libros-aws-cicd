@@ -118,7 +118,7 @@ curl http://localhost:3000/health
 
 ---
 
-## 📡 Referencia de la API REST
+## Referencia de la API REST
 
 | Método | Endpoint | Código Esperado | Descripción |
 |---|---|:---:|---|
@@ -189,7 +189,7 @@ curl -i -X DELETE http://52.15.197.239/libros/6
 
 ---
 
-## Galería de Evidencias
+## Capturas de Evidencias
 
 | N° | Evidencia | Archivo |
 |:---:|---|---|
